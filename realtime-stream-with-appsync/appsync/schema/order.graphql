@@ -1,0 +1,35 @@
+type Order {
+    id: ID!
+    productId: ID!
+    productName: String!
+    productAmount: Int!
+    productPrice: Int!
+    deliveryAddress: String!
+    deliveryState: Int!
+    createdAt: String!
+    expiresAt: AWSTimestamp!
+}
+
+input CreateOrderInput {
+    id: ID!
+    productId: ID!
+    productName: String!
+    productAmount: Int!
+    productPrice: Int!
+    deliveryAddress: String!
+    deliveryState: Int!
+    createdAt: String!
+    expiresAt: AWSTimestamp!
+}
+
+type Mutation {
+    createOrder(input: CreateOrderInput!): Order!
+}
+
+type Query {
+    getOrder(id: ID!): Order
+}
+
+type Subscription {
+    onCreateOrder: Order @aws_subscribe(mutations: ["createOrder"])
+}

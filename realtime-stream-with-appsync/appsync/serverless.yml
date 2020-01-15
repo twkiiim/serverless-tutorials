@@ -1,0 +1,68 @@
+service: 
+  name: stream-with-appsync-appsync
+
+frameworkVersion: ">=1.48.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: ap-northeast-1
+  profile: cm-personal
+
+plugins:
+  - serverless-appsync-plugin
+
+custom:
+  appSync:
+    name: StreamToAppSync
+    authenticationType: API_KEY
+    region: ap-northeast-1
+    mappingTemplatesLocation: resolvers
+    mappingTemplates:
+      - 
+        type: Mutation
+        field: createOrder
+        dataSource: Order
+      -
+        type: Query
+        field: getOrder
+        dataSource: Order
+        
+    schema:
+      - schema/order.graphql
+    
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: Order
+        description: Order Table for AppSync
+        config:
+          tableName: AppSync_Order_${self:provider.stage}
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - dynamodb:*
+              Resource:
+                - arn:aws:dynamodb:${self:provider.region}:*:table/AppSync_Order_${self:provider.stage}
+                - arn:aws:dynamodb:${self:provider.region}:*:table/AppSync_Order_${self:provider.stage}/*
+
+resources:
+  Resources:
+    OrderTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: AppSync_Order_${self:provider.stage}
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TimeToLiveSpecification:
+          AttributeName: expiresAt
+          Enabled: TRUE

@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "aws-appsync": "^2.0.2",
+    "aws-sdk": "^2.601.0",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
+    "isomorphic-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.39",
+    "@types/node": "^13.1.6",
+    "typescript": "^3.7.4"
+  }
+}
